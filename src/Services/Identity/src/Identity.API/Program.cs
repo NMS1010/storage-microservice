@@ -1,4 +1,5 @@
 using BuildingBlocks.Consul;
+using BuildingBlocks.Core.CustomAPIResponse;
 using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
 
@@ -28,15 +29,14 @@ app.UseCustomProblemDetails();
 app.UseCorrelationId();
 
 app.UseHttpsRedirection();
-
 app.UseAuthorization();
 
 app.MapControllers();
 
-
 app.MapGet("/api/healths", () => Results.Ok());
 
-app.MapGet("/api/identity/test", x => x.Response.WriteAsync("Test identity"));
+app.MapGet("/api/identity/test", x => x.Response.WriteAsJsonAsync(new APIResponse<string>(200, "Test identity")));
+
 app.MapGet("/api/identity/exception", x => throw new Exception("Test"));
 
 app.Run();

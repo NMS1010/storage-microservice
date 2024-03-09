@@ -22,7 +22,9 @@ namespace BuildingBlocks.Yarp
             _consulClient = consulClient;
             _options = options;
 
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             IntervalUpdate(_stoppingToken.Token);
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
         }
 
         public IProxyConfig GetConfig() => _inMemoryConfigProvider.GetConfig();

@@ -66,7 +66,7 @@ namespace BuildingBlocks.ProblemDetails
                         )
                     };
 
-                    var problemDetail = new ProblemDetailsContext()
+                    var problemDetailCtx = new ProblemDetailsContext()
                     {
                         HttpContext = ctx,
                         ProblemDetails =
@@ -86,10 +86,10 @@ namespace BuildingBlocks.ProblemDetails
 
                     if (app.Environment.IsDevelopment())
                     {
-                        problemDetail.ProblemDetails.Extensions.Add("Exception", exceptionHandlerFeature.Error.ToString());
+                        problemDetailCtx.ProblemDetails.Extensions.Add("Exception", exceptionHandlerFeature.Error.ToString());
                     }
 
-                    await problemDetailService.WriteAsync(problemDetail);
+                    await problemDetailService.WriteAsync(problemDetailCtx);
                 });
             });
 
