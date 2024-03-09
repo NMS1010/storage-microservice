@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddConsul(builder.Configuration);
+builder.Services.AddConsul();
 builder.Services.AddYarpWithConsul(builder.Configuration);
 
 

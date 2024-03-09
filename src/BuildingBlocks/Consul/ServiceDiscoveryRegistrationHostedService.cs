@@ -1,5 +1,5 @@
-﻿using BuildingBlocks.Configuration;
-using BuildingBlocks.Constants;
+﻿using BuildingBlocks.Constants;
+using BuildingBlocks.Web;
 using Consul;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;

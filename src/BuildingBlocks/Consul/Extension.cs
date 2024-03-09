@@ -1,7 +1,6 @@
-﻿using BuildingBlocks.Configuration;
-using BuildingBlocks.Constants;
+﻿using BuildingBlocks.Constants;
+using BuildingBlocks.Web;
 using Consul;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -9,9 +8,9 @@ namespace BuildingBlocks.Consul
 {
     public static class Extension
     {
-        public static void AddConsul(this IServiceCollection services, IConfiguration configuration)
+        public static void AddConsul(this IServiceCollection services)
         {
-            var consulOptions = configuration.GetOptions<ConsulOptions>(AppConstantOptions.CONSUL)
+            var consulOptions = services.GetOptions<ConsulOptions>(AppConstantOptions.CONSUL)
                 ?? throw new ArgumentNullException("Consul options are not configured");
 
             services.AddSingleton(consulOptions);

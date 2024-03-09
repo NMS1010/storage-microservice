@@ -14,12 +14,12 @@ namespace BuildingBlocks.Yarp
         {
             services.AddReverseProxy()
                 .LoadFromConfig(configuration.GetSection(AppConstantOptions.RESERVE_YARP))
-                .DiscoverFromConsul(configuration);
+                .DiscoverFromConsul();
 
             return services;
         }
 
-        private static IReverseProxyBuilder DiscoverFromConsul(this IReverseProxyBuilder builder, IConfiguration configuration)
+        private static IReverseProxyBuilder DiscoverFromConsul(this IReverseProxyBuilder builder)
         {
             var services = builder.Services;
 
