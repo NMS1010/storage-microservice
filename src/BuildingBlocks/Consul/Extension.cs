@@ -10,7 +10,7 @@ namespace BuildingBlocks.Consul
     {
         public static void AddConsul(this IServiceCollection services)
         {
-            var consulOptions = services.GetOptions<ConsulOptions>(AppConstantOptions.CONSUL)
+            var consulOptions = services.GetOptions<ConsulOptions>(AppConstants.CONSUL)
                 ?? throw new ArgumentNullException("Consul options are not configured");
 
             services.AddSingleton(consulOptions);

@@ -51,7 +51,7 @@ namespace BuildingBlocks.Consul
 
         private Uri GetAppUrl()
         {
-            var appAddress = _configuration.GetOptions(AppConstantOptions.ASPNETCORE_URLS);
+            var appAddress = _configuration.GetOptions(AppConstants.ASPNETCORE_URLS);
 
             if (appAddress.Contains(";"))
             {

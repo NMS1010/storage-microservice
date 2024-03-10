@@ -13,7 +13,7 @@ namespace BuildingBlocks.Yarp
         public static IServiceCollection AddYarpWithConsul(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddReverseProxy()
-                .LoadFromConfig(configuration.GetSection(AppConstantOptions.RESERVE_YARP))
+                .LoadFromConfig(configuration.GetSection(AppConstants.RESERVE_YARP))
                 .DiscoverFromConsul();
 
             return services;
@@ -24,7 +24,7 @@ namespace BuildingBlocks.Yarp
             var services = builder.Services;
 
             services.AddOptions<YarpServiceDiscoveryOptions>()
-                .BindConfiguration(AppConstantOptions.YARP_SERVICE_DISCOVERY)
+                .BindConfiguration(AppConstants.YARP_SERVICE_DISCOVERY)
                 .ValidateOnStart();
 
             var serviceProvider = services.BuildServiceProvider();
