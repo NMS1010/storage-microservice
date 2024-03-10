@@ -2,18 +2,10 @@
 
 namespace BuildingBlocks.Exceptions
 {
-    public class CustomException : Exception
+    public class CustomException(
+        string message,
+        HttpStatusCode statusCode = HttpStatusCode.BadRequest) : Exception(message)
     {
-        public HttpStatusCode StatusCode { get; set; }
-        public int? Code { get; set; }
-
-        public CustomException(
-            string message,
-            HttpStatusCode statusCode = HttpStatusCode.BadRequest,
-            int? code = null) : base(message)
-        {
-            StatusCode = statusCode;
-            Code = code;
-        }
+        public HttpStatusCode StatusCode { get; set; } = statusCode;
     }
 }

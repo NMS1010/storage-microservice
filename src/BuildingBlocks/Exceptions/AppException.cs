@@ -1,9 +1,11 @@
-﻿namespace BuildingBlocks.Exceptions
+﻿using Microsoft.AspNetCore.Http;
+using System.Net;
+
+namespace BuildingBlocks.Exceptions
 {
     public class AppException(
-       string message,
-       int? code = null
-    ) : CustomException(message, code: code)
+       string message
+    ) : CustomException(message, (HttpStatusCode)StatusCodes.Status500InternalServerError)
     {
     }
 }
