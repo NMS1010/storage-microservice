@@ -1,39 +1,28 @@
-using BuildingBlocks.Consul;
 using BuildingBlocks.Core.CustomAPIResponse;
-using BuildingBlocks.ProblemDetails;
 using BuildingBlocks.Web;
+using Identity.Configurations;
+using Identity.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddHttpContextAccessor();
-builder.Services.AddProblemDetails();
-builder.Services.AddConsul();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+builder.Host.UseDefaultServiceProvider((context, options) =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    // Service provider validation
+    // ref: https://andrewlock.net/new-in-asp-net-core-3-service-provider-validation/
+    options.ValidateScopes = context.HostingEnvironment.IsDevelopment() || context.HostingEnvironment.IsStaging() || context.HostingEnvironment.IsEnvironment("tests");
+    options.ValidateOnBuild = true;
+});
 
-app.UseCustomProblemDetails();
+builder.Services.AddMinimalEndpoints(assemblies: typeof(IdentityRoot).Assembly);
+builder.AddInfrastructure();
 
-app.UseCorrelationId();
-
-app.UseHttpsRedirection();
+app.MapMinimalEndpoints();
+app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers();
-
-app.MapGet("/api/healths", () => Results.Ok());
+app.UseInfrastructure();
 
 app.MapGet("/api/identity/test", x => x.Response.WriteAsJsonAsync(new APIResponse<string>(200, "Test identity")));
 
