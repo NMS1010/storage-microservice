@@ -2,6 +2,7 @@
 using Identity.Configurations;
 using Identity.Data;
 using Identity.Identity.Models;
+using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -40,6 +41,8 @@ namespace Identity.Extension
                 .AddAspNetIdentity<AppUser>()
                 .AddResourceOwnerValidator<UserValidator>()
                 .AddDeveloperSigningCredential();
+
+            builder.Services.AddScoped<IProfileService, ProfileService>();
 
             return builder;
         }

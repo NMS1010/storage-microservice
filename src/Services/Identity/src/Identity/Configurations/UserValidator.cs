@@ -1,4 +1,5 @@
 ﻿using Identity.Identity.Models;
+using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
@@ -23,15 +24,15 @@ namespace Identity.Configurations
 
                 var claims = new List<Claim>
                 {
-                    new(ClaimTypes.NameIdentifier, user.Id),
-                    new(ClaimTypes.Name, user.UserName),
-                    new(ClaimTypes.Email, user.Email),
-                    new(ClaimTypes.GivenName, user.FirstName + " " + user.LastName),
+                    new(JwtClaimTypes.Subject, user.Id),
+                    new(JwtClaimTypes.Name, user.UserName),
+                    new(JwtClaimTypes.Email, user.Email),
+                    new(JwtClaimTypes.GivenName, user.FirstName + " " + user.LastName),
                 };
 
                 foreach (var role in roles)
                 {
-                    claims.Add(new(ClaimTypes.Role, role));
+                    claims.Add(new(JwtClaimTypes.Role, role));
                 }
 
                 context.Result = new GrantValidationResult(

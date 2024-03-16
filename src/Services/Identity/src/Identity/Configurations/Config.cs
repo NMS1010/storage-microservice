@@ -1,4 +1,5 @@
 ﻿using Identity.Identity.Constants;
+using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Models;
 
@@ -13,7 +14,7 @@ namespace Identity.Configurations
             new IdentityResources.Email(),
             new IdentityResources.Phone(),
             new IdentityResources.Address(),
-            new(Constants.StandardScopes.Roles, ["role"])
+            new(Constants.StandardScopes.Roles, [JwtClaimTypes.Role])
         ];
 
         public static IEnumerable<ApiScope> ApiScopes =>
@@ -42,6 +43,9 @@ namespace Identity.Configurations
                     IdentityServerConstants.StandardScopes.Profile,
                     Constants.StandardScopes.IdentityApi
                 },
+                UpdateAccessTokenClaimsOnRefresh = true,
+                RefreshTokenUsage = TokenUsage.OneTimeOnly,
+                AllowOfflineAccess = true,
                 AccessTokenLifetime = 3600,  // authorize the client to access protected resources
                 IdentityTokenLifetime = 3600 // authenticate the user
             }

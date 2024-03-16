@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\..\..\..\BuildingBlocks\BuildingBlocks.csproj" />
     <ProjectReference Include="..\Identity\Identity.csproj" />
   </ItemGroup>

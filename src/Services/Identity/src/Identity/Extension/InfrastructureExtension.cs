@@ -34,7 +34,6 @@ namespace Identity.Extension
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
-
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddConsul();
             builder.Services.AddEndpointsApiExplorer();
@@ -43,8 +42,8 @@ namespace Identity.Extension
             builder.Services.AddCustomDbContext<IdentityContext>();
             builder.Services.AddCustomSwagger();
             builder.Services.AddCustomAPIVersioning();
-            builder.Services.AddCustomMediatR();
             builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
+            builder.Services.AddCustomMediatR();
             builder.Services.AddProblemDetails();
             builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
 

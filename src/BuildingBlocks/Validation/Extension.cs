@@ -11,7 +11,7 @@ namespace BuildingBlocks.Validation
 
             if (!result.IsValid)
             {
-                throw new ValidationException(responseValidation.ToString());
+                throw new BuildingBlocks.Exceptions.ValidationException(responseValidation.ToString());
             }
         }
     }
