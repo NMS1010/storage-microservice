@@ -22,7 +22,7 @@ namespace BuildingBlocks.Web
                     new QueryStringApiVersionReader("api-version")
                 );
 
-                configurator.Invoke(options);
+                configurator?.Invoke(options);
             })
             .AddApiExplorer(options =>
             {

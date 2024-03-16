@@ -1,6 +1,6 @@
-﻿using Duende.IdentityServer.Models;
-using Duende.IdentityServer.Validation;
-using Identity.Identity.Models;
+﻿using Identity.Identity.Models;
+using IdentityServer4.Models;
+using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 

@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -24,8 +23,6 @@ namespace Identity.Extension
     {
         public static WebApplicationBuilder AddInfrastructure(this WebApplicationBuilder builder)
         {
-            builder.Configuration
-                .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
             var configuration = builder.Configuration;
             var environment = builder.Environment;
 

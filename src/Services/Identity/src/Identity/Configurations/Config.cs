@@ -1,6 +1,6 @@
-﻿using Duende.IdentityServer;
-using Duende.IdentityServer.Models;
-using Identity.Identity.Constants;
+﻿using Identity.Identity.Constants;
+using IdentityServer4;
+using IdentityServer4.Models;
 
 namespace Identity.Configurations
 {

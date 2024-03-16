@@ -1,5 +1,4 @@
-﻿using BuildingBlocks.Constants;
-using BuildingBlocks.EFCore;
+﻿using BuildingBlocks.EFCore;
 using BuildingBlocks.Web;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
@@ -12,9 +11,6 @@ namespace Identity.Data
         public IdentityContext CreateDbContext(string[] args)
         {
             IConfigurationRoot configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddJsonFile($"appsettings.{AppConstants.ASPNETCORE_ENVIRONMENT}.json", optional: true, reloadOnChange: true)
                 .Build();
 
             var postgresOptions = configuration.GetOptions<PostgresOptions>(nameof(PostgresOptions));

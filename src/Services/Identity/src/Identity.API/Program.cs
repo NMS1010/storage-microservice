@@ -5,8 +5,8 @@ using Identity.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
-var app = builder.Build();
+builder.Configuration
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true);
 
 builder.Host.UseDefaultServiceProvider((context, options) =>
 {
@@ -18,6 +18,8 @@ builder.Host.UseDefaultServiceProvider((context, options) =>
 
 builder.Services.AddMinimalEndpoints(assemblies: typeof(IdentityRoot).Assembly);
 builder.AddInfrastructure();
+
+var app = builder.Build();
 
 app.MapMinimalEndpoints();
 app.UseAuthentication();
