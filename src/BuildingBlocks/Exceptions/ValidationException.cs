@@ -1,8 +1,10 @@
-﻿namespace BuildingBlocks.Exceptions
+﻿using System.Net;
+
+namespace BuildingBlocks.Exceptions
 {
     public class ValidationException(
         string message
-    ) : CustomException(message)
+    ) : CustomException(message, HttpStatusCode.BadRequest)
     {
     }
 }

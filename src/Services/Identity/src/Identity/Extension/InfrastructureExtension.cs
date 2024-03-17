@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Consul;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
 using BuildingBlocks.ProblemDetails;
@@ -34,12 +35,13 @@ namespace Identity.Extension
             {
                 options.SuppressModelStateInvalidFilter = true;
             });
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddConsul();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddControllers();
-            builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
             builder.Services.AddCustomDbContext<IdentityContext>();
+            builder.Services.AddScoped<IDataSeeder, IdentityDataSeeder>();
             builder.Services.AddCustomSwagger();
             builder.Services.AddCustomAPIVersioning();
             builder.Services.AddValidatorsFromAssembly(typeof(IdentityRoot).Assembly);
@@ -48,6 +50,7 @@ namespace Identity.Extension
             builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
 
             builder.AddCustomIdentityServer();
+            builder.Services.AddJwt();
 
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
             {
@@ -63,9 +66,9 @@ namespace Identity.Extension
             var env = app.Environment;
             var appOptions = app.GetOptions<AppOptions>(nameof(AppOptions));
 
+            app.UseCustomProblemDetails();
             app.UseForwardedHeaders();
 
-            app.UseCustomProblemDetails();
             app.UseSerilogRequestLogging(options =>
             {
                 options.EnrichDiagnosticContext = LogEnrichHelper.EnrichFromRequest;

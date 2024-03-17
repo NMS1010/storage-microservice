@@ -56,6 +56,14 @@ namespace BuildingBlocks.ProblemDetails
                             StatusCodes.Status400BadRequest,
                             ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest)
                         ),
+                        UnauthorizedException appException => (
+                            StatusCodes.Status401Unauthorized,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)
+                        ),
+                        ForbiddenException appException => (
+                            StatusCodes.Status403Forbidden,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status403Forbidden)
+                        ),
                         AppException appException => (
                             StatusCodes.Status500InternalServerError,
                             ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError)
