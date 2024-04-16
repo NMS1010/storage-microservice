@@ -1,10 +1,12 @@
-﻿using BuildingBlocks.Web;
+﻿using BuildingBlocks.EFCore;
+using BuildingBlocks.Web;
 using Identity.Configurations;
 using Identity.Data;
 using Identity.Identity.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Identity.Extension
@@ -14,6 +16,9 @@ namespace Identity.Extension
         public static WebApplicationBuilder AddCustomIdentityServer(this WebApplicationBuilder builder)
         {
             var authOptions = builder.Services.GetOptions<AuthOptions>(nameof(AuthOptions));
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
+            var postgresOptions = builder.Services.GetOptions<PostgresOptions>("PostgresOptions");
 
             builder.Services
                 .AddIdentity<AppUser, IdentityRole>(config =>
@@ -26,7 +31,8 @@ namespace Identity.Extension
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();
 
-            builder.Services.AddIdentityServer(options =>
+            builder.Services
+                .AddIdentityServer(options =>
                 {
                     options.Events.RaiseErrorEvents = true;
                     options.Events.RaiseInformationEvents = true;
@@ -34,12 +40,19 @@ namespace Identity.Extension
                     options.Events.RaiseSuccessEvents = true;
                     options.IssuerUri = authOptions.IssuerUri;
                 })
-                .AddInMemoryIdentityResources(Config.IdentityResources)
-                .AddInMemoryApiResources(Config.ApiResources)
-                .AddInMemoryApiScopes(Config.ApiScopes)
-                .AddInMemoryClients(Config.Clients)
+                .AddConfigurationStore(options =>
+                {
+                    options.ConfigureDbContext = b
+                        => b.UseNpgsql(postgresOptions.ConnectionString);
+                })
+                .AddOperationalStore(options =>
+                {
+                    options.ConfigureDbContext = b
+                        => b.UseNpgsql(postgresOptions.ConnectionString);
+                })
                 .AddAspNetIdentity<AppUser>()
                 .AddResourceOwnerValidator<UserValidator>()
+                .AddProfileService<ProfileService>()
                 .AddDeveloperSigningCredential();
 
             builder.Services.AddScoped<IProfileService, ProfileService>();

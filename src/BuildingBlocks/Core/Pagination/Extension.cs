@@ -22,7 +22,7 @@ namespace BuildingBlocks.Core.Pagination
                 Filters = request.Filters
             };
 
-            int totalCount = await source.CountAsync();
+            int totalCount = await source.CountAsync(cancellationToken: cancellationToken);
 
             List<T> items = await sieveProcessor
                 .Apply(sieveModel, source, applyFiltering: true, applyPagination: true)

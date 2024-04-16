@@ -2,10 +2,7 @@
 
 namespace Identity.Identity.Exceptions
 {
-    public class RegisterUserException : AppException
+    public class RegisterUserException(string message) : AppException(message)
     {
-        public RegisterUserException(string message) : base(message)
-        {
-        }
     }
 }

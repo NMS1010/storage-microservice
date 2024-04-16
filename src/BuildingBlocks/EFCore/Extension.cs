@@ -12,6 +12,8 @@ namespace BuildingBlocks.EFCore
         public static IServiceCollection AddCustomDbContext<TContext>(this IServiceCollection services)
             where TContext : DbContext
         {
+            // When this setting is enabled, Npgsql will treat timestamp values as UTC and adjust them for the local time zone
+            // when reading and writing to the database
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
             var postgresOptions = services.GetOptions<PostgresOptions>("PostgresOptions");
@@ -21,12 +23,12 @@ namespace BuildingBlocks.EFCore
 
                 options.UseNpgsql(
                     postgresOptions?.ConnectionString,
-                        dbOptions =>
-                        {
-                            dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
-                        }
-                     )
-                    .UseSnakeCaseNamingConvention();
+                    dbOptions =>
+                    {
+                        dbOptions.MigrationsAssembly(typeof(TContext).Assembly.GetName().Name);
+                    }
+                )
+                .UseSnakeCaseNamingConvention();
             });
 
 
@@ -47,7 +49,7 @@ namespace BuildingBlocks.EFCore
         }
 
         private static async Task MigrateDatabaseAsync<TContext>(IServiceProvider serviceProvider)
-        where TContext : DbContext
+            where TContext : DbContext
         {
             using var scope = serviceProvider.CreateScope();
 

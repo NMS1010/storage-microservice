@@ -91,7 +91,7 @@ namespace Identity.Identity.Features.RegisterNewUser.V1
         public async Task<RegisterNewUserResult> Handle(RegisterNewUserCommand command, CancellationToken cancellationToken)
         {
             var user = command.Adapt<AppUser>();
-
+            user.UserName = command.Email.Replace("@", "");
             var result = await _userManager.CreateAsync(user, command.Password);
 
             if (result.Succeeded)

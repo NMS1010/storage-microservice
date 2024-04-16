@@ -52,21 +52,29 @@ namespace BuildingBlocks.ProblemDetails
                     var exceptionType = exceptionHandlerFeature.Error;
                     (int StatusCode, string title) = exceptionType switch
                     {
-                        ValidationException appException => (
+                        AppException appException => (
+                            StatusCodes.Status500InternalServerError,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError)
+                        ),
+                        BadRequestException appException => (
                             StatusCodes.Status400BadRequest,
                             ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest)
-                        ),
-                        UnauthorizedException appException => (
-                            StatusCodes.Status401Unauthorized,
-                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)
                         ),
                         ForbiddenException appException => (
                             StatusCodes.Status403Forbidden,
                             ReasonPhrases.GetReasonPhrase(StatusCodes.Status403Forbidden)
                         ),
-                        AppException appException => (
-                            StatusCodes.Status500InternalServerError,
-                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status500InternalServerError)
+                        NotFoundException appException => (
+                            StatusCodes.Status404NotFound,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status404NotFound)
+                        ),
+                        UnauthorizedException appException => (
+                            StatusCodes.Status401Unauthorized,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status401Unauthorized)
+                        ),
+                        ValidationException appException => (
+                            StatusCodes.Status400BadRequest,
+                            ReasonPhrases.GetReasonPhrase(StatusCodes.Status400BadRequest)
                         ),
                         _ => (
                             StatusCodes.Status500InternalServerError,
