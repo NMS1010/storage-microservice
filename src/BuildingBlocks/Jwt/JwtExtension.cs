@@ -13,7 +13,7 @@ namespace BuildingBlocks.Jwt
     {
         public static IServiceCollection AddJwt(this IServiceCollection services)
         {
-            var jwtOptions = services.GetOptions<JwtBearerOptions>("Jwt");
+            var jwtOptions = services.GetOptions<JwtOptions>(nameof(JwtOptions));
 
             services
                 .AddAuthentication(options =>

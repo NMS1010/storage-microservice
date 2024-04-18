@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Constants;
+using BuildingBlocks.Web;
 using Consul;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,9 +24,7 @@ namespace BuildingBlocks.Yarp
         {
             var services = builder.Services;
 
-            services.AddOptions<YarpServiceDiscoveryOptions>()
-                .BindConfiguration(AppConstants.YARP_SERVICE_DISCOVERY)
-                .ValidateOnStart();
+            services.AddValidateOptions<YarpServiceDiscoveryOptions>();
 
             var serviceProvider = services.BuildServiceProvider();
 
