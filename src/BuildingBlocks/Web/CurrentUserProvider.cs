@@ -1,5 +1,4 @@
-﻿using IdentityModel;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 
 namespace BuildingBlocks.Web
@@ -15,7 +14,7 @@ namespace BuildingBlocks.Web
         public string GetUserId()
         {
             return _httpContextAccessor?.HttpContext?.User
-                ?.FindFirstValue(JwtClaimTypes.Subject);
+                ?.FindFirstValue(ClaimTypes.NameIdentifier);
         }
     }
 }

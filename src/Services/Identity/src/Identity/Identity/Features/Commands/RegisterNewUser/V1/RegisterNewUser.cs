@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Routing;
 
-namespace Identity.Identity.Features.RegisterNewUser.V1
+namespace Identity.Identity.Features.Commands.RegisterNewUser.V1
 {
     public record RegisterNewUserCommand(
         string Email,
@@ -59,7 +59,7 @@ namespace Identity.Identity.Features.RegisterNewUser.V1
     {
         public IEndpointRouteBuilder MapEndpoint(IEndpointRouteBuilder builder)
         {
-            builder.MapPost($"{EndpointConfig.BaseAPIPath}/identity/register-user",
+            builder.MapPost($"{EndpointConfig.BaseAPIPath}/register-user",
                 async (RegisterNewUserRequestDto request, IMediator _mediator) =>
                 {
                     var command = request.Adapt<RegisterNewUserCommand>();
@@ -91,23 +91,30 @@ namespace Identity.Identity.Features.RegisterNewUser.V1
     {
         public async Task<RegisterNewUserResult> Handle(RegisterNewUserCommand command, CancellationToken cancellationToken)
         {
-            var user = command.Adapt<AppUser>();
-            user.UserName = command.Email.Replace("@", "");
-            var result = await _userManager.CreateAsync(user, command.Password);
-
-            if (result.Succeeded)
+            try
             {
-                var roleResult = await _userManager.AddToRoleAsync(user, Common.SystemRole.USER);
+                var user = command.Adapt<AppUser>();
+                user.UserName = command.Email.Replace("@", "");
+                var result = await _userManager.CreateAsync(user, command.Password);
 
-                if (!roleResult.Succeeded)
+                if (result.Succeeded)
                 {
-                    throw new RegisterUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
+                    var roleResult = await _userManager.AddToRoleAsync(user, Common.SystemRole.USER);
+
+                    if (!roleResult.Succeeded)
+                    {
+                        throw new RegisterUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
+                    }
+
+                    return user.Adapt<RegisterNewUserResult>();
                 }
 
-                return user.Adapt<RegisterNewUserResult>();
+                throw new RegisterUserException(string.Join(',', result.Errors.Select(e => e.Description)));
             }
-
-            throw new RegisterUserException(string.Join(',', result.Errors.Select(e => e.Description)));
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

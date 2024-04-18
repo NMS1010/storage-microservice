@@ -1,10 +1,8 @@
 ﻿using Identity.Identity.Exceptions;
 using Identity.Identity.Models;
-using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 
 namespace Identity.Configurations
 {
@@ -15,38 +13,22 @@ namespace Identity.Configurations
     {
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var user = await _userManager.FindByEmailAsync(context.UserName)
-                ?? throw new UserNotFoundException("User not found");
-
-            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, context.Password, false);
-
-            if (signInResult.Succeeded)
+            try
             {
-                var roles = await _userManager.GetRolesAsync(user);
-
-                var claims = new List<Claim>
-                {
-                    new(JwtClaimTypes.Subject, user.Id),
-                    new(JwtClaimTypes.Name, user.UserName),
-                    new(JwtClaimTypes.Email, user.Email),
-                    new(JwtClaimTypes.GivenName, user.FirstName + " " + user.LastName),
-                };
-
-                foreach (var role in roles)
-                {
-                    claims.Add(new(JwtClaimTypes.Role, role));
-                }
+                var user = await _userManager.FindByEmailAsync(context.UserName)
+                    ?? throw new InvalidCredentialsException("Email is incorrect");
 
                 context.Result = new GrantValidationResult(
                     subject: user.Id,
-                    authenticationMethod: "password",
-                    claims: claims
+                    authenticationMethod: GrantType.ResourceOwnerPassword
                 );
-
-                return;
             }
+            catch (Exception)
+            {
+                context.Result = new GrantValidationResult(TokenRequestErrors.UnauthorizedClient, "Invalid Credentials");
 
-            context.Result = new GrantValidationResult(TokenRequestErrors.UnauthorizedClient, "Invalid Credentials");
+                throw;
+            }
         }
     }
 }

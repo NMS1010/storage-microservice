@@ -52,6 +52,12 @@ namespace Identity.Extension
             builder.AddCustomIdentityServer();
             builder.Services.AddJwt();
 
+            var authOptions = builder.Services.GetOptions<AuthOptions>(nameof(AuthOptions));
+            builder.Services.AddHttpClient(authOptions.ClientId, c =>
+                {
+                    c.BaseAddress = new Uri(authOptions.IssuerUri);
+                }
+            );
             builder.Services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders =
