@@ -25,6 +25,12 @@ namespace Identity.Configurations
 
             claims = claims.Where(claim => context.RequestedClaimTypes.Contains(claim.Type)).ToList();
 
+            claims.Add(new Claim(JwtClaimTypes.Subject, sub));
+            claims.Add(new Claim(JwtClaimTypes.Email, user?.Email));
+            claims.Add(new Claim(JwtClaimTypes.Name, user?.UserName));
+            //claims.Add(new Claim(JwtClaimTypes.PhoneNumber, user?.PhoneNumber));
+            claims.Add(new Claim(JwtClaimTypes.ClientId, context.Client?.ClientId));
+
             if (_userManager.SupportsUserRole)
             {
                 var roles = await _userManager.GetRolesAsync(user);

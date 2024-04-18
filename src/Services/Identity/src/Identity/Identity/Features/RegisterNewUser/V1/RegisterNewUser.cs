@@ -1,4 +1,5 @@
-﻿using BuildingBlocks.Core.CQRS;
+﻿using BuildingBlocks.Constants;
+using BuildingBlocks.Core.CQRS;
 using BuildingBlocks.Core.CustomAPIResponse;
 using BuildingBlocks.Web;
 using FluentValidation;
@@ -74,7 +75,7 @@ namespace Identity.Identity.Features.RegisterNewUser.V1
             .WithApiVersionSet(builder.NewApiVersionSet("Identity").Build())
             .Produces<RegisterNewUserResponseDto>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
-            .WithSummary("Register User")
+            .WithSummary("Register new User")
             .WithDescription("Register new user")
             .WithOpenApi()
             .HasApiVersion(1.0);
@@ -96,19 +97,17 @@ namespace Identity.Identity.Features.RegisterNewUser.V1
 
             if (result.Succeeded)
             {
-                var roleResult = await _userManager.AddToRoleAsync(user, Constants.Constants.Role.USER);
+                var roleResult = await _userManager.AddToRoleAsync(user, Common.SystemRole.USER);
 
                 if (!roleResult.Succeeded)
                 {
                     throw new RegisterUserException(string.Join(',', roleResult.Errors.Select(e => e.Description)));
                 }
-            }
-            else
-            {
-                throw new RegisterUserException(string.Join(',', result.Errors.Select(e => e.Description)));
+
+                return user.Adapt<RegisterNewUserResult>();
             }
 
-            return user.Adapt<RegisterNewUserResult>();
+            throw new RegisterUserException(string.Join(',', result.Errors.Select(e => e.Description)));
         }
     }
 }

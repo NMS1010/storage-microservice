@@ -1,9 +1,8 @@
+using BuildingBlocks.Constants;
 using BuildingBlocks.Core.CustomAPIResponse;
 using BuildingBlocks.Web;
 using Identity.Configurations;
 using Identity.Extension;
-using Identity.Identity.Constants;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,12 +29,8 @@ app.UseAuthorization();
 app.UseInfrastructure();
 app.MapMinimalEndpoints();
 
-app.MapGet("/api/identity/test", x => x.Response.WriteAsJsonAsync(new APIResponse<string>(200, "Test identity"))).RequireAuthorization(x =>
-{
-    x.RequireAuthenticatedUser();
-    x.RequireRole(Constants.Role.USER);
-    x.AuthenticationSchemes = [JwtBearerDefaults.AuthenticationScheme];
-});
+app.MapGet("/api/identity/test", x => x.Response.WriteAsJsonAsync(new APIResponse<string>(200, "Test identity")))
+    .RequireAuthorization(Common.AuthServer.STORAGE_APP);
 
 app.MapGet("/api/identity/exception", x => throw new Exception("Test"));
 

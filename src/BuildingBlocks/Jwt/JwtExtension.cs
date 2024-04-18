@@ -1,5 +1,6 @@
-﻿using BuildingBlocks.Web;
-using IdentityServer4.Models;
+﻿using BuildingBlocks.Constants;
+using BuildingBlocks.Web;
+using IdentityModel;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,7 @@ namespace BuildingBlocks.Jwt
         public static IServiceCollection AddJwt(this IServiceCollection services)
         {
             var jwtOptions = services.GetOptions<JwtBearerOptions>("Jwt");
+
             services
                 .AddAuthentication(options =>
                 {
@@ -64,14 +66,21 @@ namespace BuildingBlocks.Jwt
 
             if (!string.IsNullOrEmpty(jwtOptions.Audience))
             {
-                services.AddAuthorization(options =>
-                {
-                    options.AddPolicy(nameof(ApiScope), policy =>
+                services.AddAuthorizationBuilder()
+                    .AddPolicy(Common.AuthServer.STORAGE_APP, policy =>
                     {
                         policy.RequireAuthenticatedUser();
-                        policy.RequireClaim("scope", jwtOptions.Audience);
+                        policy.RequireClaim("scope", Common.AuthServer.STORAGE_APP_SCOPE);
+                        policy.RequireClaim(JwtClaimTypes.Role, Common.SystemRole.USER);
+                        policy.AuthenticationSchemes = [JwtBearerDefaults.AuthenticationScheme];
+                    })
+                    .AddPolicy(Common.AuthServer.STORAGE_ADMIN_APP, policy =>
+                    {
+                        policy.RequireAuthenticatedUser();
+                        policy.RequireClaim("scope", Common.AuthServer.STORAGE_APP_SCOPE);
+                        policy.RequireClaim(JwtClaimTypes.Role, Common.SystemRole.ADMIN);
+                        policy.AuthenticationSchemes = [JwtBearerDefaults.AuthenticationScheme];
                     });
-                });
             }
 
             return services;

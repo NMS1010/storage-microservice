@@ -1,5 +1,5 @@
-﻿using BuildingBlocks.EFCore;
-using Identity.Identity.Constants;
+﻿using BuildingBlocks.Constants;
+using BuildingBlocks.EFCore;
 using Identity.Identity.Models;
 using Microsoft.AspNetCore.Identity;
 
@@ -19,14 +19,14 @@ namespace Identity.Data.Seed
 
         private async Task SeedRoles()
         {
-            if (await _roleManager.RoleExistsAsync(Constants.Role.ADMIN) == false)
+            if (await _roleManager.RoleExistsAsync(Common.SystemRole.ADMIN) == false)
             {
-                await _roleManager.CreateAsync(new IdentityRole { Name = Constants.Role.ADMIN });
+                await _roleManager.CreateAsync(new IdentityRole { Name = Common.SystemRole.ADMIN });
             }
 
-            if (await _roleManager.RoleExistsAsync(Constants.Role.USER) == false)
+            if (await _roleManager.RoleExistsAsync(Common.SystemRole.USER) == false)
             {
-                await _roleManager.CreateAsync(new IdentityRole { Name = Constants.Role.USER });
+                await _roleManager.CreateAsync(new IdentityRole { Name = Common.SystemRole.USER });
             }
         }
 
@@ -38,7 +38,7 @@ namespace Identity.Data.Seed
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(IdentityInitialData.Users.First(), Constants.Role.ADMIN);
+                    await _userManager.AddToRoleAsync(IdentityInitialData.Users.First(), Common.SystemRole.ADMIN);
                 }
             }
 
@@ -48,7 +48,7 @@ namespace Identity.Data.Seed
 
                 if (result.Succeeded)
                 {
-                    await _userManager.AddToRoleAsync(IdentityInitialData.Users.Last(), Constants.Role.USER);
+                    await _userManager.AddToRoleAsync(IdentityInitialData.Users.Last(), Common.SystemRole.USER);
                 }
             }
         }

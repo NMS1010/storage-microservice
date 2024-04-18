@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace BuildingBlocks.Web
 {
@@ -34,6 +35,15 @@ namespace BuildingBlocks.Web
         public static string GetOptions(this IConfiguration configuration, string section)
         {
             return configuration.GetSection(section).Value;
+        }
+
+        public static void AddValidateOptions<T>(this IServiceCollection services) where T : class, new()
+        {
+            services.AddOptions<T>()
+                .BindConfiguration(typeof(T).Name)
+                .ValidateDataAnnotations();
+
+            services.AddSingleton(x => x.GetRequiredService<IOptions<T>>().Value);
         }
     }
 }

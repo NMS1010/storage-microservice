@@ -1,4 +1,5 @@
-﻿using Identity.Identity.Models;
+﻿using Identity.Identity.Exceptions;
+using Identity.Identity.Models;
 using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Validation;
@@ -14,7 +15,8 @@ namespace Identity.Configurations
     {
         public async Task ValidateAsync(ResourceOwnerPasswordValidationContext context)
         {
-            var user = await _userManager.FindByEmailAsync(context.UserName);
+            var user = await _userManager.FindByEmailAsync(context.UserName)
+                ?? throw new UserNotFoundException("User not found");
 
             var signInResult = await _signInManager.CheckPasswordSignInAsync(user, context.Password, false);
 
@@ -37,7 +39,7 @@ namespace Identity.Configurations
 
                 context.Result = new GrantValidationResult(
                     subject: user.Id,
-                    authenticationMethod: "custom",
+                    authenticationMethod: "password",
                     claims: claims
                 );
 
