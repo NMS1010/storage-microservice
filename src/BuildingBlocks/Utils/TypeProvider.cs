@@ -59,5 +59,14 @@ namespace BuildingBlocks.Utils
 
             return result;
         }
+
+        public static Type? GetFirstMatchingTypeFromCurrentDomainAssembly(string typeName)
+        {
+            var result = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes().Where(x => x.FullName == typeName || x.Name == typeName))
+                .FirstOrDefault();
+
+            return result;
+        }
     }
 }

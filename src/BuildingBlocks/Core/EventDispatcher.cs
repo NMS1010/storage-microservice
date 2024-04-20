@@ -1,4 +1,5 @@
 ﻿using BuildingBlocks.Core.Event;
+using BuildingBlocks.PersistMessageStore.Interfaces;
 using BuildingBlocks.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,8 @@ namespace BuildingBlocks.Core
         IEventMapper _eventMapper,
         ILogger<EventDispatcher> _logger,
         IServiceScopeFactory _serviceScopeFactory,
-        IHttpContextAccessor _httpContextAccessor
+        IHttpContextAccessor _httpContextAccessor,
+        IPersistMessageProcessor _persistMessageProcessor
     ) : IEventDispatcher
     {
 
@@ -38,7 +40,10 @@ namespace BuildingBlocks.Core
             {
                 foreach (var integrationEvent in integrationEvents)
                 {
-                    // public message to persist storage
+                    // publish message to persist storage
+                    await _persistMessageProcessor.PublishMessageAsync(
+                        new MessageEnvelope(integrationEvent, SetHeaders())
+                        , cancellationToken);
                 }
             }
 
@@ -64,7 +69,8 @@ namespace BuildingBlocks.Core
 
                 foreach (var internalCommand in internalCommands)
                 {
-                    // public message to persist storage
+                    // publish message to persist storage
+                    await _persistMessageProcessor.AddInternalMessageAsync(internalCommand, cancellationToken);
                 }
             }
         }
