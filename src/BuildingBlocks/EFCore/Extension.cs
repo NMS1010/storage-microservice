@@ -16,7 +16,7 @@ namespace BuildingBlocks.EFCore
             // when reading and writing to the database
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
-            var postgresOptions = services.GetOptions<PostgresOptions>("PostgresOptions");
+            var postgresOptions = services.GetOptions<PostgresOptions>(nameof(PostgresOptions));
 
             services.AddDbContext<TContext>((sp, options) =>
             {

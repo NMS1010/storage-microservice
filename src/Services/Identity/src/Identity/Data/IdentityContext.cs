@@ -6,7 +6,7 @@ using System.Reflection;
 namespace Identity.Data
 {
     public class IdentityContext(
-        DbContextOptions options
+        DbContextOptions<IdentityContext> options
     )
         : IdentityDbContext<AppUser>(options)
     {

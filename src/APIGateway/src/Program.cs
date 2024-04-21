@@ -1,4 +1,5 @@
 using BuildingBlocks.Consul;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Yarp;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddCors(options =>
                 .AllowAnyHeader();
         });
 });
+builder.Services.AddCustomHealthCheck();
 
 var app = builder.Build();
 
@@ -31,6 +33,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("_allowOrigins");
+
+app.UseCustomHealthCheck();
 
 app.UseHttpsRedirection();
 

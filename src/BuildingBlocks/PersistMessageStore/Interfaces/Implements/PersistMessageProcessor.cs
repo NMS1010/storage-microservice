@@ -205,6 +205,14 @@ namespace BuildingBlocks.PersistMessageStore.Interfaces.Implements
                 messageId = message.EventId;
             }
 
+            var messageExists = await _persistMessageDbContext.PersistMessages
+                .FirstOrDefaultAsync(x => x.Id == messageId, cancellationToken);
+
+            if (messageExists != null)
+            {
+                return messageId;
+            }
+
             var persistMessage = new PersistMessage(
                 messageId,
                 messageEnvelope.Message.GetType().ToString(),

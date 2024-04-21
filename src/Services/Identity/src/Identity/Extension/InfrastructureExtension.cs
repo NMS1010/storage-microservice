@@ -1,5 +1,6 @@
 ﻿using BuildingBlocks.Consul;
 using BuildingBlocks.EFCore;
+using BuildingBlocks.HealthCheck;
 using BuildingBlocks.Jwt;
 using BuildingBlocks.Logging;
 using BuildingBlocks.Mapster;
@@ -48,6 +49,7 @@ namespace Identity.Extension
             builder.Services.AddCustomMediatR();
             builder.Services.AddProblemDetails();
             builder.Services.AddCustomMapster(typeof(IdentityRoot).Assembly);
+            builder.Services.AddCustomHealthCheck();
 
             builder.AddCustomIdentityServer();
             builder.Services.AddJwt();
@@ -74,6 +76,7 @@ namespace Identity.Extension
 
             app.UseCustomProblemDetails();
             app.UseForwardedHeaders();
+            app.UseCustomHealthCheck();
 
             app.UseSerilogRequestLogging(options =>
             {
