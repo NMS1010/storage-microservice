@@ -69,7 +69,7 @@ namespace BuildingBlocks.Core
 
                 foreach (var internalCommand in internalCommands)
                 {
-                    // publish message to persist storage
+                    // publish internal message to persist storage
                     await _persistMessageProcessor.AddInternalMessageAsync(internalCommand, cancellationToken);
                 }
             }

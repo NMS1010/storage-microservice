@@ -9,5 +9,6 @@ namespace BuildingBlocks.Core.Model
         public string LastModifiedBy { get; set; }
         public DateTime? LastModifiedAt { get; set; }
         public bool IsDeleted { get; set; }
+        public long Version { get; set; }
     }
 }
