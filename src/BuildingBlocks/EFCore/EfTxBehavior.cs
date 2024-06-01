@@ -16,8 +16,9 @@ namespace BuildingBlocks.EFCore
     {
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
+            var functionName = $"{typeof(EfTxBehavior<TRequest, TResponse>).Name} {nameof(Handle)} =>";
             _logger.LogInformation(
-                $"{nameof(EfTxBehavior<TRequest, TResponse>)} Handled command {typeof(TRequest).FullName} with content {JsonSerializer.Serialize(request)}");
+                $"{functionName} Handled command {typeof(TRequest).FullName}, content = {JsonSerializer.Serialize(request)}");
 
             var response = await next();
 

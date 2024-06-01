@@ -7,6 +7,7 @@ namespace BuildingBlocks.Web
     {
         string GetUserId();
     }
+
     public class CurrentUserProvider(
         IHttpContextAccessor _httpContextAccessor
     ) : ICurrentUserProvider

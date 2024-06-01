@@ -18,6 +18,8 @@ namespace BuildingBlocks.PersistMessageStore.Interfaces.Implements
         IPublishEndpoint _publishEndpoint
     ) : IPersistMessageProcessor
     {
+        private readonly string _functionName = $"{nameof(PersistMessageProcessor)} =>";
+
         public async Task<Guid> AddReceivedMessageAsync<TMessageEnvelope>(
             TMessageEnvelope messageEnvelope, CancellationToken cancellationToken = default) where TMessageEnvelope : MessageEnvelope
         {
@@ -27,13 +29,15 @@ namespace BuildingBlocks.PersistMessageStore.Interfaces.Implements
         public async Task PublishMessageAsync<TMessageEnvelope>(
             TMessageEnvelope messageEnvelope, CancellationToken cancellationToken = default) where TMessageEnvelope : MessageEnvelope
         {
-            await SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.OUTBOX, cancellationToken);
+            var messageId = await SavePersistMessageAsync(messageEnvelope, MessageDeliveryType.OUTBOX, cancellationToken);
+            await ProcessAsync(messageId, MessageDeliveryType.OUTBOX, cancellationToken);
         }
 
         public async Task AddInternalMessageAsync<TCommand>(
             TCommand internalCommand, CancellationToken cancellationToken) where TCommand : class, IInternalCommand
         {
-            await SavePersistMessageAsync(new MessageEnvelope(internalCommand, null), MessageDeliveryType.INTERNAL, cancellationToken);
+            var messageId = await SavePersistMessageAsync(new MessageEnvelope(internalCommand, null), MessageDeliveryType.INTERNAL, cancellationToken);
+            await ProcessAsync(messageId, MessageDeliveryType.INTERNAL, cancellationToken);
         }
 
         public async Task<PersistMessage> ExistProcessedInboxMessageAsync(
@@ -80,7 +84,7 @@ namespace BuildingBlocks.PersistMessageStore.Interfaces.Implements
 
             if (persistMessage == null)
             {
-                _logger.LogWarning($"Message with id: {messageId} and delivery type: {deliveryType} not found in persistence message store.");
+                _logger.LogWarning($"{_functionName} => Message id = {messageId} and Delivery type = {deliveryType} not found in persistence message store.");
                 return;
             }
 
@@ -144,13 +148,13 @@ namespace BuildingBlocks.PersistMessageStore.Interfaces.Implements
                 }, cancellationToken);
 
                 _logger.LogInformation(
-                    $"Message with id: {persistMessage.Id} and delivery type: {persistMessage.MessageDeliveryType} processed from the persistence message store.");
+                    $"{_functionName} => Message id = {persistMessage.Id} and delivery type = {persistMessage.MessageDeliveryType} processed from the persistence message store.");
 
                 return true;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, $"Error occurred while processing message with id: {persistMessage.Id}, message type: {persistMessage.MessageDeliveryType}");
+                _logger.LogError(ex, $"{_functionName} => Error occurred while processing message id: {persistMessage.Id}, delivery type: {persistMessage.MessageDeliveryType}. Message = {ex.Message}");
                 await ChangeMessageStatusAsync(persistMessage, cancellationToken, MessageStatus.IN_PROGRESSING, true);
 
                 return false;

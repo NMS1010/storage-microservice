@@ -14,8 +14,9 @@ namespace BuildingBlocks.EFCore
     ) : DbContext(options), IDbContext
     {
         private IDbContextTransaction _currentTransaction;
+        private readonly string _functionName = $"{nameof(AppDbContextBase)} =>";
 
-        public DbSet<TEntity> Set<TEntity>() where TEntity : class
+        public new DbSet<TEntity> Set<TEntity>() where TEntity : class
         {
             return base.Set<TEntity>();
         }
@@ -78,7 +79,7 @@ namespace BuildingBlocks.EFCore
             //ref: https://learn.microsoft.com/en-us/ef/core/saving/concurrency?tabs=data-annotations#resolving-concurrency-conflicts
             catch (DbUpdateConcurrencyException ex)
             {
-                _logger.LogError(ex, "Error on saving changes");
+                _logger.LogError(ex, $"{_functionName} {nameof(SaveChangeAsync)} Error on saving changes. Error Message = {ex.Message}");
                 foreach (var entry in ex.Entries)
                 {
                     // get current database values
@@ -86,7 +87,7 @@ namespace BuildingBlocks.EFCore
 
                     if (databaseValues == null)
                     {
-                        _logger.LogError("The record no longer exists in the database, The record has been deleted by another user.");
+                        _logger.LogError($"{_functionName} {nameof(SaveChangeAsync)} The record no longer exists in the database, The record has been deleted by another user.");
                         throw;
                     }
 
@@ -98,7 +99,7 @@ namespace BuildingBlocks.EFCore
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error on saving changes");
+                _logger.LogError(ex, $"{_functionName} {nameof(SaveChangeAsync)} Error on saving changes. Error Message = {ex.Message}");
                 throw;
             }
         }
@@ -136,7 +137,7 @@ namespace BuildingBlocks.EFCore
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error on before saving changes");
+                _logger.LogError(ex, $"{_functionName} {nameof(OnBeforeSaving)} Error on before saving changes. Error Message = {ex.Message}");
                 throw;
             }
         }

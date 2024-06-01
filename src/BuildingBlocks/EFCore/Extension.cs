@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace BuildingBlocks.EFCore
 {
@@ -31,19 +30,14 @@ namespace BuildingBlocks.EFCore
                 .UseSnakeCaseNamingConvention();
             });
 
-
             return services;
         }
 
         public static IApplicationBuilder UseMigration<TContext>(this IApplicationBuilder app, IWebHostEnvironment env)
-        where TContext : DbContext
+            where TContext : DbContext
         {
             MigrateDatabaseAsync<TContext>(app.ApplicationServices).GetAwaiter().GetResult();
-
-            if (!env.IsEnvironment("test"))
-            {
-                SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
-            }
+            //SeedDataAsync(app.ApplicationServices).GetAwaiter().GetResult();
 
             return app;
         }

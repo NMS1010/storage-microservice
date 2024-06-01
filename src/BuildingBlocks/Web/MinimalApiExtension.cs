@@ -8,7 +8,8 @@ namespace BuildingBlocks.Web
 {
     public static class MinimalApiExtension
     {
-        public static IServiceCollection AddMinimalEndpoints(
+        public static IServiceCollection AddMinimalEndpoints
+        (
             this IServiceCollection services,
             ServiceLifetime lifetime = ServiceLifetime.Scoped,
             params Assembly[] assemblies
@@ -33,7 +34,8 @@ namespace BuildingBlocks.Web
         }
 
 
-        public static IEndpointRouteBuilder MapMinimalEndpoints(
+        public static IEndpointRouteBuilder MapMinimalEndpoints
+        (
             this IEndpointRouteBuilder builder
         )
         {
